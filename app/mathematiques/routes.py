@@ -16,6 +16,7 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from app.mathematiques.automatismes.routes import router as automatismes_router
+from app.mathematiques.fiches.routes import router as fiches_router
 from app.mathematiques.problemes.routes import router as problemes_router
 
 logger = logging.getLogger(__name__)
@@ -40,6 +41,7 @@ def math_index(request: Request):
 
 router.include_router(automatismes_router, prefix="/automatismes")
 router.include_router(problemes_router, prefix="/problemes")
+router.include_router(fiches_router, prefix="/fiches")
 
 
 __all__ = ["router", "PREFIX"]
