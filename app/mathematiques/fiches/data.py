@@ -1,57 +1,13 @@
 """Contenu des 6 fiches de révision (cartes mentales) maths.
 
-Chaque fiche est une arborescence à 3 niveaux :
-
-    Fiche
-    ├── Branche 1 (couleur)
-    │   ├── Feuille 1 (label + exemples + astuce)
-    │   └── Feuille 2 ...
-    └── Branche 2 ...
-
-La structure des dataclasses est volontairement identique au pendant
-français (`app/francais/fiches/data.py`) — pas de factorisation
-prématurée tant qu'on n'a pas un 3e module qui les partage.
+Le rendu Jinja parcourt l'arborescence Fiche → Branch → Leaf pour produire
+la carte mentale. Les dataclasses sont définies dans `app.core.fiches`
+(partagées avec français et histoire-géo-EMC).
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-
-
-# ============================================================================
-# Modèle de données
-# ============================================================================
-
-
-@dataclass
-class Leaf:
-    """Feuille de la carte mentale : un concept précis avec exemples."""
-
-    label: str
-    examples: list[str] = field(default_factory=list)
-    tip: str | None = None
-
-
-@dataclass
-class Branch:
-    """Branche thématique : regroupe plusieurs feuilles autour d'un sous-thème."""
-
-    label: str
-    color: str
-    icon: str
-    leaves: list[Leaf] = field(default_factory=list)
-
-
-@dataclass
-class Fiche:
-    """Carte mentale complète."""
-
-    slug: str
-    title: str
-    subtitle: str
-    central: str
-    intro: str
-    branches: list[Branch] = field(default_factory=list)
+from app.core.fiches import Branch, Fiche, Leaf
 
 
 # ============================================================================

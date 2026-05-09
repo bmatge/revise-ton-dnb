@@ -1,57 +1,16 @@
-"""Contenu des 6 fiches de révision (cartes mentales).
+"""Contenu des 6 fiches de révision (cartes mentales) français.
 
-Chaque fiche est une arborescence à 3 niveaux :
+Le rendu Jinja parcourt l'arborescence Fiche → Branch → Leaf pour produire
+la carte mentale. Les dataclasses sont définies dans `app.core.fiches`
+(partagées avec maths et histoire-géo-EMC).
 
-    Fiche
-    ├── Branche 1 (couleur)
-    │   ├── Feuille 1 (label + exemples + astuce)
-    │   └── Feuille 2 ...
-    └── Branche 2 ...
-
-Le rendu Jinja parcourt cette structure pour produire la carte mentale.
 Les exemples sont tirés des annales DNB 2018-2025 quand c'est pertinent
 pour ancrer la fiche dans des situations réelles d'examen.
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-
-
-# ============================================================================
-# Modèle de données
-# ============================================================================
-
-
-@dataclass
-class Leaf:
-    """Feuille de la carte mentale : un concept précis avec exemples."""
-
-    label: str
-    examples: list[str] = field(default_factory=list)
-    tip: str | None = None
-
-
-@dataclass
-class Branch:
-    """Branche thématique : regroupe plusieurs feuilles autour d'un sous-thème."""
-
-    label: str
-    color: str  # nom de couleur Tailwind brand : "rose", "indigo", "emerald", etc.
-    icon: str  # emoji affiché dans la pastille (côté UI uniquement, pas dans le code)
-    leaves: list[Leaf] = field(default_factory=list)
-
-
-@dataclass
-class Fiche:
-    """Carte mentale complète."""
-
-    slug: str
-    title: str
-    subtitle: str  # accroche d'une ligne sur la home
-    central: str  # concept central, court (3-6 mots)
-    intro: str  # phrase d'intro pour cadrer la fiche
-    branches: list[Branch] = field(default_factory=list)
+from app.core.fiches import Branch, Fiche, Leaf
 
 
 # ============================================================================

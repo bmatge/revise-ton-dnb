@@ -32,6 +32,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.histoire_geo_emc import outils as hgemc_outils
 from app.histoire_geo_emc.developpement_construit.routes import router as dc_router
+from app.histoire_geo_emc.fiches.routes import router as fiches_router
 from app.histoire_geo_emc.reperes.routes import router as reperes_router
 
 logger = logging.getLogger(__name__)
@@ -108,6 +109,7 @@ def _legacy_restart():
 
 router.include_router(dc_router, prefix="/developpement-construit")
 router.include_router(reperes_router, prefix="/reperes")
+router.include_router(fiches_router, prefix="/fiches")
 
 
 __all__ = ["router", "PREFIX"]
