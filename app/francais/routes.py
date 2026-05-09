@@ -25,6 +25,7 @@ from fastapi.templating import Jinja2Templates
 from app.francais import outils as fr_outils
 from app.francais.comprehension.routes import router as comprehension_router
 from app.francais.dictee.routes import router as dictee_router
+from app.francais.fiches.routes import router as fiches_router
 from app.francais.redaction.routes import router as redaction_router
 
 logger = logging.getLogger(__name__)
@@ -54,5 +55,6 @@ fr_outils.register_route(router, templates)
 router.include_router(comprehension_router, prefix="/comprehension")
 router.include_router(dictee_router, prefix="/dictee")
 router.include_router(redaction_router, prefix="/redaction")
+router.include_router(fiches_router, prefix="/fiches")
 
 __all__ = ["router", "PREFIX"]
