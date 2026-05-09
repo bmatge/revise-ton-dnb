@@ -1,0 +1,59 @@
+{% extends "_francais_base.html" %}
+{% block title %}Fiches de révision — Français DNB{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+  <header>
+    <p class="text-sm text-slate-500">
+      <a href="/francais/" class="hover:text-brand-700">Français</a>
+      <span class="mx-1">·</span>
+      Fiches de révision
+    </p>
+    <h1 class="mt-2 font-display text-3xl font-bold text-brand-900">
+      Fiches de révision
+    </h1>
+    <p class="mt-2 text-slate-600 max-w-2xl">
+      Six cartes mentales pour réviser les questions qui reviennent le plus
+      souvent au DNB de français. À consulter avant ou après un exercice de
+      compréhension.
+    </p>
+  </header>
+
+  <section>
+    <ul class="grid gap-4 sm:grid-cols-2">
+      {% for fiche in fiches %}
+      <li>
+        <a href="/francais/fiches/{{ fiche.slug }}"
+           class="group block h-full rounded-2xl bg-white border border-slate-200 p-5 shadow-sm hover:shadow-glow hover:border-brand-300 hover:-translate-y-0.5 transition">
+          <div class="flex items-start gap-3">
+            <span class="flex-shrink-0 inline-flex items-center justify-center h-10 w-10 rounded-xl bg-brand-50 text-brand-700 font-display font-bold text-lg group-hover:bg-brand-100">
+              {{ loop.index }}
+            </span>
+            <div class="flex-1">
+              <h2 class="font-display font-bold text-lg text-slate-900 group-hover:text-brand-900">
+                {{ fiche.title }}
+              </h2>
+              <p class="mt-1 text-sm text-slate-600 leading-snug">
+                {{ fiche.subtitle }}
+              </p>
+              <p class="mt-3 text-xs text-slate-500">
+                {{ fiche.branches|length }} grandes parties
+              </p>
+            </div>
+          </div>
+        </a>
+      </li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <aside class="rounded-2xl bg-brand-50/60 border border-brand-100 p-5 text-sm text-slate-700">
+    <p class="font-semibold text-brand-900 mb-1">Comment utiliser ces fiches ?</p>
+    <ul class="list-disc pl-5 space-y-1">
+      <li>Lis-la une première fois en entier, sans chercher à tout retenir.</li>
+      <li>Reviens-y juste avant un exercice de compréhension pour te rafraîchir la mémoire.</li>
+      <li>Quand tu butes sur une question, reviens à la fiche correspondante : la réponse est souvent dans une branche.</li>
+    </ul>
+  </aside>
+</div>
+{% endblock %}
