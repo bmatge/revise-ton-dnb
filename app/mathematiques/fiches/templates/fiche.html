@@ -1,0 +1,129 @@
+{% extends "_maths_base.html" %}
+{% block title %}{{ fiche.title }} — Fiche maths DNB{% endblock %}
+
+{#
+  Carte mentale d'une fiche de révision maths.
+
+  Structure visuelle :
+   - Bandeau : fil d'Ariane + titre + intro
+   - Nœud central : carte mise en avant avec la question centrale de la fiche
+   - Branches : grille de cartes colorées, chacune contient une liste de feuilles
+
+  Le mapping nom de couleur → classes Tailwind est tenu dans le dict `_palette`
+  ci-dessous : on garde toutes les classes utilisées en clair pour rester
+  compatible avec un build Tailwind purgeant les classes non détectées.
+#}
+
+{% set _palette = {
+  "rose":    {"bg":"bg-rose-50",    "border":"border-rose-200",    "ring":"ring-rose-300",    "head":"bg-rose-100 text-rose-800",    "icon":"bg-rose-500 text-white",    "tip":"text-rose-900"},
+  "indigo":  {"bg":"bg-indigo-50",  "border":"border-indigo-200",  "ring":"ring-indigo-300",  "head":"bg-indigo-100 text-indigo-800","icon":"bg-indigo-500 text-white",  "tip":"text-indigo-900"},
+  "emerald": {"bg":"bg-emerald-50", "border":"border-emerald-200", "ring":"ring-emerald-300", "head":"bg-emerald-100 text-emerald-800","icon":"bg-emerald-500 text-white","tip":"text-emerald-900"},
+  "amber":   {"bg":"bg-amber-50",   "border":"border-amber-200",   "ring":"ring-amber-300",   "head":"bg-amber-100 text-amber-800",  "icon":"bg-amber-500 text-white",   "tip":"text-amber-900"},
+  "violet":  {"bg":"bg-violet-50",  "border":"border-violet-200",  "ring":"ring-violet-300",  "head":"bg-violet-100 text-violet-800","icon":"bg-violet-500 text-white",  "tip":"text-violet-900"},
+  "slate":   {"bg":"bg-slate-50",   "border":"border-slate-200",   "ring":"ring-slate-300",   "head":"bg-slate-100 text-slate-800",  "icon":"bg-slate-500 text-white",   "tip":"text-slate-900"},
+} %}
+
+{% block content %}
+<div class="space-y-8">
+
+  <header>
+    <p class="text-sm text-slate-500">
+      <a href="/mathematiques/" class="hover:text-brand-700">Mathématiques</a>
+      <span class="mx-1">·</span>
+      <a href="/mathematiques/fiches/" class="hover:text-brand-700">Fiches</a>
+      <span class="mx-1">·</span>
+      {{ fiche.title }}
+    </p>
+    <h1 class="mt-2 font-display text-3xl font-bold text-brand-900">
+      {{ fiche.title }}
+    </h1>
+    <p class="mt-3 text-slate-600 leading-relaxed max-w-2xl">
+      {{ fiche.intro }}
+    </p>
+  </header>
+
+  <section class="flex justify-center">
+    <div class="relative max-w-md text-center rounded-3xl border-2 border-brand-300 bg-gradient-to-br from-brand-50 to-white px-6 py-5 shadow-glow">
+      <div class="text-[10px] font-semibold uppercase tracking-wider text-brand-500 mb-1">
+        Concept central
+      </div>
+      <p class="font-display text-xl font-bold text-brand-900 leading-tight">
+        {{ fiche.central }}
+      </p>
+    </div>
+  </section>
+
+  <div class="flex justify-center -my-4" aria-hidden="true">
+    <div class="h-8 w-px bg-gradient-to-b from-brand-300 to-transparent"></div>
+  </div>
+
+  <section class="grid gap-5 md:grid-cols-2">
+    {% for branch in fiche.branches %}
+      {% set p = _palette.get(branch.color, _palette["slate"]) %}
+      <article class="rounded-2xl border-2 {{ p.border }} {{ p.bg }} overflow-hidden shadow-sm">
+
+        <header class="flex items-center gap-3 px-4 py-3 {{ p.head }}">
+          <span class="flex-shrink-0 inline-flex items-center justify-center h-9 w-9 rounded-xl {{ p.icon }} font-display font-bold">
+            {{ branch.icon }}
+          </span>
+          <h3 class="font-display font-bold text-base leading-tight">
+            {{ branch.label }}
+          </h3>
+        </header>
+
+        <ul class="divide-y divide-white/60 bg-white/40">
+          {% for leaf in branch.leaves %}
+          <li class="px-4 py-3">
+            <p class="font-semibold text-slate-900 text-sm">{{ leaf.label }}</p>
+
+            {% if leaf.tip %}
+            <p class="mt-1 text-sm {{ p.tip }} leading-snug">
+              <span class="font-semibold">Astuce&nbsp;:</span>
+              {{ leaf.tip }}
+            </p>
+            {% endif %}
+
+            {% if leaf.examples %}
+            <ul class="mt-2 space-y-1">
+              {% for ex in leaf.examples %}
+              <li class="text-sm text-slate-700 leading-snug pl-3 border-l-2 {{ p.border }}">
+                {{ ex }}
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </li>
+          {% endfor %}
+        </ul>
+
+      </article>
+    {% endfor %}
+  </section>
+
+  <nav class="flex items-center justify-between gap-3 flex-wrap pt-4 border-t border-slate-200">
+    <a href="/mathematiques/fiches/" class="text-sm text-slate-500 hover:text-brand-700">
+      ← Toutes les fiches
+    </a>
+
+    {% set ns = namespace(idx=-1) %}
+    {% for f in fiches %}
+      {% if f.slug == fiche.slug %}{% set ns.idx = loop.index0 %}{% endif %}
+    {% endfor %}
+
+    <div class="flex items-center gap-3 text-sm">
+      {% if ns.idx > 0 %}
+      <a href="/mathematiques/fiches/{{ fiches[ns.idx - 1].slug }}"
+         class="text-slate-600 hover:text-brand-700">
+        ← {{ fiches[ns.idx - 1].title }}
+      </a>
+      {% endif %}
+      {% if ns.idx >= 0 and ns.idx < (fiches|length - 1) %}
+      <a href="/mathematiques/fiches/{{ fiches[ns.idx + 1].slug }}"
+         class="text-slate-600 hover:text-brand-700 font-semibold">
+        {{ fiches[ns.idx + 1].title }} →
+      </a>
+      {% endif %}
+    </div>
+  </nav>
+</div>
+{% endblock %}
